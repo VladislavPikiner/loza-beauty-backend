@@ -1,17 +1,27 @@
+import mongoose, { Schema } from "mongoose";
 import RecordSchema from "../models/Record.js";
+import ServiceSchema from "../models/Service.js";
 
 export const create = async (req, res) => {
   try {
-    const { name, price, clientName, clientPhone, date, startTime, endTime } =
-      req.body;
-    const doc = new RecordSchema({
-      name,
-      price,
+    const {
+      service,
       clientName,
       clientPhone,
-      date,
+      startDate,
       startTime,
       endTime,
+      comment,
+    } = req.body;
+
+    const doc = new RecordSchema({
+      service: mongoose.Types.ObjectId(service),
+      clientName,
+      clientPhone,
+      startDate,
+      startTime,
+      endTime,
+      comment,
     });
 
     const record = await doc.save();
@@ -25,7 +35,9 @@ export const create = async (req, res) => {
 
 export const getAllRecords = async (req, res) => {
   try {
-    const allRecords = await RecordSchema.find();
+    const allRecords = await RecordSchema.find()
+      .populate({ path: "service", model: "Service" })
+      .exec();
 
     res.json(allRecords);
   } catch (error) {
@@ -56,5 +68,22 @@ export const deleteRecord = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Не удалось удалить запись" });
+  }
+};
+
+export const getRecordsOnDate = async (req, res) => {
+  try {
+    const { currentDate } = req.body;
+
+    const allRecordsOnDate = await RecordSchema.find({
+      startDate: currentDate,
+    }).populate({ path: "service", model: "Service" });
+
+    res.json(allRecordsOnDate);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Не удалось загрузить записи на выбранную дату " });
   }
 };

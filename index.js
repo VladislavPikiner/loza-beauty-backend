@@ -23,6 +23,9 @@ app.use(express.json());
 app.post("/record", RecordController.create);
 app.get("/record", RecordController.getAllRecords);
 
+app.post("/time", RecordController.getRecordsOnDate);
+app.post("/duration", ServiceController.getServiceDuration);
+
 app.get("/work", authCheck, RecordController.getAvailableRecords);
 app.delete("/work/:id", authCheck, RecordController.deleteRecord);
 
@@ -35,6 +38,8 @@ app.get("/login", LoginController.getAllAdmins);
 app.post("/login", LoginController.login);
 
 app.post("/register", LoginController.register);
+
+app.post("/schedule", ServiceController.getAvailableTime);
 
 const PORT = process.env.PORT || 8080;
 

@@ -1,38 +1,31 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
-const RecordSchema = new mongoose.Schema(
+const RecordSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-    },
+    service: { type: mongoose.Types.ObjectId, ref: "Service" },
     clientName: {
       type: String,
-      required: true,
+      required: false,
     },
     clientPhone: {
       type: Number,
       required: true,
     },
-    date: {
+    startDate: {
       type: String,
       required: true,
     },
     startTime: {
-      type: String,
+      type: Date,
       required: true,
     },
     endTime: {
-      type: String,
+      type: Date,
       required: true,
+    },
+    comment: {
+      type: String,
+      required: false,
     },
   },
   {
@@ -40,4 +33,4 @@ const RecordSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Record", RecordSchema);
+export default model("Record", RecordSchema);

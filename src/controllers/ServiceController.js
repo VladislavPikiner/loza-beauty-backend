@@ -1,5 +1,5 @@
 import ServiceSchema from "../models/Service.js";
-
+import { getAvailabilities } from "@tspvivek/sscheduler";
 export const create = async (req, res) => {
   try {
     const {
@@ -66,5 +66,62 @@ export const deleteService = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Не удалось удалить процедуру" });
+  }
+};
+
+export const getServiceDuration = async (req, res) => {
+  try {
+    const serviceId = req.body;
+
+    const service = await ServiceSchema.findById({ _id: serviceId.serviceId });
+    const serviceDuration = service.duration;
+    res.status(200).json({ serviceDuration });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Не удалось загрузить service duration " });
+  }
+};
+
+export const getAvailableTime = async (req, res) => {
+  try {
+    const { duration, unavailable, date } = req.body;
+    const availabilityFrom = new Date();
+    const availabilityTo = new Date(
+      availabilityFrom.setDate(availabilityFrom.getDate() + 30)
+    );
+
+    const availableTime = getAvailabilities({
+      from: new Date().toISOString().split("T")[0],
+      to: availabilityTo.toISOString().split("T")[0],
+      timezone: "EET",
+      duration: duration,
+      interval: duration,
+
+      schedule: {
+        weekdays: {
+          from: "08:00",
+          to: "20:30",
+          // unavailability: [{ from: "12:00", to: "13:00" }], if need rest between records
+        },
+        // unavailability: [
+        //   { from: "2017-02-20T00:00", to: "2017-02-27T00:00" },
+        // ], second syntax for unavailable
+        allocated: unavailable,
+      },
+    }).filter((record) => {
+      // return record.from.includes(recordDate.toISOString().split("T")[0]);
+      return record.from.includes(date);
+    });
+
+    const availableSlots = availableTime.map((time) => {
+      return time.from.split("T")[1].slice(0, 5);
+    });
+
+    res.status(200).json({ availableSlots });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Не удалось загрузить available time slots " });
   }
 };
