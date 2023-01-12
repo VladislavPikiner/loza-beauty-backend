@@ -1,6 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 import RecordSchema from "../models/Record.js";
-import ServiceSchema from "../models/Service.js";
 
 export const create = async (req, res) => {
   try {
@@ -85,5 +84,45 @@ export const getRecordsOnDate = async (req, res) => {
     res
       .status(500)
       .json({ message: "Не удалось загрузить записи на выбранную дату " });
+  }
+};
+
+export const unavailableTime = async (req, res) => {
+  try {
+    const availabilityFrom = new Date();
+    const availabilityTo = new Date(
+      availabilityFrom.setDate(availabilityFrom.getDate() + 33)
+    );
+    const availabilityFromFormatted = new Date().toISOString();
+    const availabilityToFormatted = availabilityTo.toISOString();
+
+    console.log(availabilityFromFormatted < availabilityToFormatted);
+    console.log(availabilityFromFormatted);
+    console.log(availabilityToFormatted);
+    const records = await RecordSchema.find()
+      .where("startTime")
+      .gt(availabilityFromFormatted)
+      .lt(availabilityToFormatted)
+      .populate({ path: "service", model: "Service" });
+
+    const unavailableSlots = records.map((record) => {
+      let duration = record.service.duration / 1000 / 60;
+      let startTimes = new Date(record.startTime)
+        .toISOString()
+        .split(".")[0]
+        .slice(0, -3);
+
+      return {
+        from: startTimes,
+        duration: duration,
+      };
+    });
+
+    res.json(unavailableSlots);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Не удалось загрузить unavailable time slots " });
   }
 };

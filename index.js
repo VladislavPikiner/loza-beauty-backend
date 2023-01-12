@@ -24,7 +24,6 @@ app.post("/record", RecordController.create);
 app.get("/record", RecordController.getAllRecords);
 
 app.post("/time", RecordController.getRecordsOnDate);
-app.post("/duration", ServiceController.getServiceDuration);
 
 app.get("/work", authCheck, RecordController.getAvailableRecords);
 app.delete("/work/:id", authCheck, RecordController.deleteRecord);
@@ -39,7 +38,8 @@ app.post("/login", LoginController.login);
 
 app.post("/register", LoginController.register);
 
-app.post("/schedule", ServiceController.getAvailableTime);
+app.post("/schedules", ServiceController.getAvailableTime);
+app.get("/schedules", RecordController.unavailableTime);
 
 const PORT = process.env.PORT || 8080;
 

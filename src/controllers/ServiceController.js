@@ -69,22 +69,10 @@ export const deleteService = async (req, res) => {
   }
 };
 
-export const getServiceDuration = async (req, res) => {
-  try {
-    const serviceId = req.body;
-
-    const service = await ServiceSchema.findById({ _id: serviceId.serviceId });
-    const serviceDuration = service.duration;
-    res.status(200).json({ serviceDuration });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Не удалось загрузить service duration " });
-  }
-};
-
 export const getAvailableTime = async (req, res) => {
   try {
     const { duration, unavailable, date } = req.body;
+
     const availabilityFrom = new Date();
     const availabilityTo = new Date(
       availabilityFrom.setDate(availabilityFrom.getDate() + 30)
@@ -118,10 +106,5 @@ export const getAvailableTime = async (req, res) => {
     });
 
     res.status(200).json({ availableSlots });
-  } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Не удалось загрузить available time slots " });
-  }
+  } catch (error) {}
 };
