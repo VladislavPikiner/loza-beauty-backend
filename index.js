@@ -5,6 +5,7 @@ import {
   RecordController,
   ServiceController,
   LoginController,
+  VacationController,
 } from "./src/controllers/index.js";
 import authCheck from "./src/authCheck.js";
 
@@ -38,8 +39,15 @@ app.post("/login", LoginController.login);
 
 app.post("/register", LoginController.register);
 
-app.post("/schedules", ServiceController.getAvailableTime);
+app.post(
+  "/schedules",
+  VacationController.getVacations,
+  ServiceController.getAvailableTime
+);
 app.get("/schedules", RecordController.unavailableTime);
+
+app.post("/vacations", VacationController.createVacations);
+app.get("/vacations", VacationController.getVacations);
 
 const PORT = process.env.PORT || 8080;
 

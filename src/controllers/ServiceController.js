@@ -71,7 +71,7 @@ export const deleteService = async (req, res) => {
 
 export const getAvailableTime = async (req, res) => {
   try {
-    const { duration, unavailable, date } = req.body;
+    const { duration, unavailable, date, vacations } = req.body;
 
     const availabilityFrom = new Date();
     const availabilityTo = new Date(
@@ -91,9 +91,7 @@ export const getAvailableTime = async (req, res) => {
           to: "20:30",
           // unavailability: [{ from: "12:00", to: "13:00" }], if need rest between records
         },
-        // unavailability: [
-        //   { from: "2017-02-20T00:00", to: "2017-02-27T00:00" },
-        // ], second syntax for unavailable
+        unavailability: vacations, // second syntax for unavailable
         allocated: unavailable,
       },
     }).filter((record) => {
