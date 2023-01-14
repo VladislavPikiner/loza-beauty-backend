@@ -27,6 +27,10 @@ const RecordSchema = new Schema(
       type: String,
       required: false,
     },
+    complete: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

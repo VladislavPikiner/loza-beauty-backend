@@ -91,6 +91,8 @@ export const getAvailableTime = async (req, res) => {
           to: "20:30",
           // unavailability: [{ from: "12:00", to: "13:00" }], if need rest between records
         },
+        Saturday: { from: "08:00", to: "20:30" },
+        Sunday: { from: "08:00", to: "20:30" },
         unavailability: vacations, // second syntax for unavailable
         allocated: unavailable,
       },

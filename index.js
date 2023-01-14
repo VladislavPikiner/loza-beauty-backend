@@ -23,8 +23,10 @@ app.use(express.json());
 
 app.post("/record", RecordController.create);
 app.get("/record", RecordController.getAllRecords);
+app.patch("/record/:id", RecordController.updateRecord);
+app.delete("/record/:id", RecordController.deleteRecord);
 
-app.post("/time", RecordController.getRecordsOnDate);
+app.get("/archiveRecords", RecordController.getArchiveRecords);
 
 app.get("/work", authCheck, RecordController.getAvailableRecords);
 app.delete("/work/:id", authCheck, RecordController.deleteRecord);
@@ -48,6 +50,7 @@ app.get("/schedules", RecordController.unavailableTime);
 
 app.post("/vacations", VacationController.createVacations);
 app.get("/vacations", VacationController.getVacations);
+app.delete("/vacations/:id", VacationController.removeVacation);
 
 const PORT = process.env.PORT || 8080;
 

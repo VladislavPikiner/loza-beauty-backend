@@ -21,8 +21,8 @@ export const getVacations = async (req, res, next) => {
   try {
     const vacations = await VacationSchema.find();
 
-    const vacationFormatted = vacations.map(({ from, to }) => {
-      return { from, to };
+    const vacationFormatted = vacations.map(({ _id, from, to }) => {
+      return { from, to, _id };
     });
     req.body.vacations = vacationFormatted;
 
@@ -32,5 +32,17 @@ export const getVacations = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Не удалось загрузить отпуска" });
+  }
+};
+
+export const removeVacation = async (req, res) => {
+  try {
+    const vacationId = req.params.id;
+    console.log(vacationId);
+    await VacationSchema.findByIdAndRemove({ _id: vacationId });
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Не удалось delete отпуска" });
   }
 };

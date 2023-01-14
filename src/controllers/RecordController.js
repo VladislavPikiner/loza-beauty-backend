@@ -49,9 +49,27 @@ export const getAvailableRecords = async (req, res) => {
   try {
     const today = new Date().toLocaleDateString();
     console.log(today);
-    const availableRecords = await RecordSchema.find().where("date").gt(today);
+    const availableRecords = await RecordSchema.find({ complete: false })
+      .where("date")
+      .gt(today);
 
     res.json(availableRecords);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Не удалось загрузить записи" });
+  }
+};
+
+export const getArchiveRecords = async (req, res) => {
+  try {
+    const today = new Date().toLocaleDateString();
+    console.log(today);
+    const archiveRecords = await RecordSchema.find({ complete: true })
+      .where("date")
+      .gt(today)
+      .populate({ path: "service", model: "Service" });
+
+    res.json(archiveRecords);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Не удалось загрузить записи" });
@@ -70,20 +88,15 @@ export const deleteRecord = async (req, res) => {
   }
 };
 
-export const getRecordsOnDate = async (req, res) => {
+export const updateRecord = async (req, res) => {
+  const recordId = req.params.id;
   try {
-    const { currentDate } = req.body;
+    await RecordSchema.findByIdAndUpdate({ _id: recordId }, { complete: true });
 
-    const allRecordsOnDate = await RecordSchema.find({
-      startDate: currentDate,
-    }).populate({ path: "service", model: "Service" });
-
-    res.json(allRecordsOnDate);
+    res.json({ success: true });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ message: "Не удалось загрузить записи на выбранную дату " });
+    res.status(500).json({ message: "Не удалось удалить запись" });
   }
 };
 
