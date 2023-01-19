@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const webAppUrl = "http://localhost:5173";
+const webAppUrl = "https://loza-beauty.netlify.app";
 
 const bot = new TelegramBot(telegramConfig.telegram.token, { polling: true });
 

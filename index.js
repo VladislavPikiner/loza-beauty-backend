@@ -9,6 +9,7 @@ import {
 } from "./src/controllers/index.js";
 import authCheck from "./src/authCheck.js";
 import { telegramBot } from "./src/api/telegramBot.js";
+import { sendMsg } from "./src/api/telegramNotification.js";
 
 mongoose
   .connect(
@@ -22,7 +23,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/record", RecordController.create);
+app.post("/record", sendMsg, RecordController.create);
 app.get("/record", RecordController.getAllRecords);
 app.patch("/record/:id", RecordController.updateRecord);
 app.delete("/record/:id", RecordController.deleteRecord);
