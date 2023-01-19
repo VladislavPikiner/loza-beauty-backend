@@ -8,6 +8,7 @@ import {
   VacationController,
 } from "./src/controllers/index.js";
 import authCheck from "./src/authCheck.js";
+import { telegramBot } from "./src/api/telegramBot.js";
 
 mongoose
   .connect(
@@ -51,6 +52,8 @@ app.get("/schedules", RecordController.unavailableTime);
 app.post("/vacations", VacationController.createVacations);
 app.get("/vacations", VacationController.getVacations);
 app.delete("/vacations/:id", VacationController.removeVacation);
+
+telegramBot;
 
 const PORT = process.env.PORT || 8080;
 
