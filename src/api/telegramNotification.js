@@ -8,12 +8,13 @@ export const sendMsg = async (req, res, next) => {
 
     //каждый элемент обьекта запихиваем в массив
     let fields = [
-      "<b>Новий онлайн-запис!</b>",
-      "<b>Ім'я клієнта</b>: " + reqBody.orderId,
-      "<b>Телефон</b>: " + reqBody.orderPhoneNumber,
-      "<b>Дата</b>: " + reqBody.contactType,
-      "<b>Початок</b>: " + reqBody.orderDeliveryNumber,
-      "<b>Завершення</b>: " + reqBody.orderDeliveryAddress,
+      "📨<b>Новий онлайн-запис!</b>",
+      "<b>Ім'я клієнта</b>: " + reqBody.clientName,
+      "📞<b>Телефон</b>: " + reqBody.clientPhone,
+      "📆<b>Дата</b>: " + reqBody.startDate,
+      "⏱️<b>Початок</b>: " + reqBody.startTime.split("T")[1].slice(0, -8),
+      "<b>Завершення</b>: " + reqBody.endTime.split("T")[1].slice(0, -8),
+      "🙋🏼‍♀️<b>Комментар</b>: " + reqBody.comment,
     ];
     let msg = "";
     //проходимся по массиву и склеиваем все в одну строку

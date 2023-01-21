@@ -6,6 +6,7 @@ import {
   ServiceController,
   LoginController,
   VacationController,
+  FeedbackController,
 } from "./src/controllers/index.js";
 import authCheck from "./src/authCheck.js";
 import { telegramBot } from "./src/api/telegramBot.js";
@@ -53,6 +54,12 @@ app.get("/schedules", RecordController.unavailableTime);
 app.post("/vacations", VacationController.createVacations);
 app.get("/vacations", VacationController.getVacations);
 app.delete("/vacations/:id", VacationController.removeVacation);
+
+app.post(
+  "/feedback",
+  FeedbackController.feedbackNotification,
+  FeedbackController.create
+);
 
 telegramBot;
 
