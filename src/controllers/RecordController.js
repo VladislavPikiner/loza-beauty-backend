@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import ConsumableSchema from "../models/Consumable.js";
 import RecordSchema from "../models/Record.js";
 
 export const create = async (req, res) => {
@@ -12,14 +13,18 @@ export const create = async (req, res) => {
       endTime,
       comment,
     } = req.body;
+    const start = new Date(Date.parse(startTime) + 7200000);
+    const end = new Date(Date.parse(endTime) + 7200000);
+    console.log(start);
+    console.log(end);
 
     const doc = new RecordSchema({
       service: mongoose.Types.ObjectId(service),
       clientName,
       clientPhone,
       startDate,
-      startTime,
-      endTime,
+      startTime: start,
+      endTime: end,
       comment,
     });
 
@@ -34,7 +39,7 @@ export const create = async (req, res) => {
 
 export const getAllRecords = async (req, res) => {
   try {
-    const allRecords = await RecordSchema.find()
+    const allRecords = await RecordSchema.find({ complete: false })
       .populate({ path: "service", model: "Service" })
       .exec();
 
@@ -91,9 +96,40 @@ export const deleteRecord = async (req, res) => {
 export const updateRecord = async (req, res) => {
   const recordId = req.params.id;
   try {
-    await RecordSchema.findByIdAndUpdate({ _id: recordId }, { complete: true });
+    const completeRecord = await RecordSchema.findByIdAndUpdate(
+      { _id: recordId },
+      { complete: true }
+    )
+      .populate({ path: "service", model: "Service" })
+      .exec();
+    const consumables = completeRecord.service.consumable;
 
-    res.json({ success: true });
+    consumables.map(async ({ consumableId, amount }) => {
+      try {
+        const findConsumables = await ConsumableSchema.find({
+          _id: consumableId,
+        });
+        const cost = findConsumables[0].price * amount;
+
+        await ConsumableSchema.findByIdAndUpdate(
+          { _id: consumableId },
+          { $inc: { amount: -amount, totalCost: -cost } }
+        );
+
+        const updated = await ConsumableSchema.find({ _id: consumableId });
+        console.log(updated);
+        if (updated.amount < 0 || updated.totalCost < 0) {
+          await ConsumableSchema.updateOne(
+            { _id: consumableId },
+            { $set: { amount: 0, totalCost: 0 } }
+          );
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    res.status(200).json({ success: true });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Не удалось удалить запись" });
@@ -120,10 +156,8 @@ export const unavailableTime = async (req, res) => {
 
     const unavailableSlots = records.map((record) => {
       let duration = record.service.duration / 1000 / 60;
-      let startTimes = new Date(record.startTime)
-        .toISOString()
-        .split(".")[0]
-        .slice(0, -3);
+      const start = new Date(Date.parse(record.startTime) - 3600000);
+      let startTimes = start.toISOString().split(".")[0].slice(0, -3);
 
       return {
         from: startTimes,

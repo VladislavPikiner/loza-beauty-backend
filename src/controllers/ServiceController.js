@@ -1,5 +1,6 @@
 import ServiceSchema from "../models/Service.js";
 import { getAvailabilities } from "@tspvivek/sscheduler";
+import mongoose from "mongoose";
 export const create = async (req, res) => {
   try {
     const {
@@ -10,7 +11,9 @@ export const create = async (req, res) => {
       available,
       address,
       price,
+      consumable,
     } = req.body;
+
     const doc = new ServiceSchema({
       name,
       duration,
@@ -19,6 +22,7 @@ export const create = async (req, res) => {
       description,
       available,
       price,
+      consumable,
     });
     const service = await doc.save();
 
@@ -31,29 +35,16 @@ export const create = async (req, res) => {
 
 export const getServices = async (req, res) => {
   try {
-    const services = await ServiceSchema.find();
-
+    const services = await ServiceSchema.find()
+      .populate({
+        path: "consumable.consumableId",
+        model: "Consumable",
+      })
+      .exec();
     res.json(services);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Не удалось получить процедуры" });
-  }
-};
-
-export const availableSwitcher = async (req, res) => {
-  const { name } = req.body;
-  try {
-    await ServiceSchema.updateOne(
-      {
-        name: name,
-      },
-      { $set: { available: !true } }
-    );
-
-    res.json({ success: true });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Не удалось изменить процедуру" });
   }
 };
 

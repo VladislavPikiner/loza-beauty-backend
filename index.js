@@ -7,6 +7,8 @@ import {
   LoginController,
   VacationController,
   FeedbackController,
+  ConsumableController,
+  SupplyController,
 } from "./src/controllers/index.js";
 import authCheck from "./src/authCheck.js";
 import { telegramBot } from "./src/api/telegramBot.js";
@@ -29,6 +31,10 @@ app.get("/record", RecordController.getAllRecords);
 app.patch("/record/:id", RecordController.updateRecord);
 app.delete("/record/:id", RecordController.deleteRecord);
 
+app.get("/consumable", ConsumableController.getAllConsumable);
+app.post("/consumable", ConsumableController.create);
+app.delete("/consumable/:id", ConsumableController.deleteConsumable);
+
 app.get("/archiveRecords", RecordController.getArchiveRecords);
 
 app.get("/work", authCheck, RecordController.getAvailableRecords);
@@ -36,7 +42,7 @@ app.delete("/work/:id", authCheck, RecordController.deleteRecord);
 
 app.post("/service", authCheck, ServiceController.create);
 app.get("/service", ServiceController.getServices);
-app.patch("/service", ServiceController.availableSwitcher);
+
 app.delete("/service/:id", authCheck, ServiceController.deleteService);
 
 app.get("/login", LoginController.getAllAdmins);
@@ -60,6 +66,10 @@ app.post(
   FeedbackController.feedbackNotification,
   FeedbackController.create
 );
+
+app.post("/supply", SupplyController.create);
+app.get("/supply", SupplyController.getAllSupply);
+app.delete("/supply/:id", SupplyController.deleteSupply);
 
 telegramBot;
 

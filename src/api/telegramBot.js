@@ -2,7 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import express from "express";
 import cors from "cors";
 import telegramConfig from "../config/telegramConfig.js";
-import ServiceSchema from "../models/Service.js";
+
 const app = express();
 
 app.use(express.json());

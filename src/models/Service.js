@@ -29,6 +29,13 @@ const ServiceSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  consumable: [
+    {
+      consumableId: { type: mongoose.Types.ObjectId, ref: "Consumable" },
+      amount: Number,
+    },
+  ],
 });
 
 export default mongoose.model("Service", ServiceSchema);

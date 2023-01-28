@@ -5,6 +5,8 @@ export const sendMsg = async (req, res, next) => {
   //токен и id чата берутся из telegramConfig.js
   try {
     let reqBody = req.body;
+    const begin = new Date(reqBody.startTime).toLocaleTimeString().slice(0, -3);
+    const end = new Date(reqBody.endTime).toLocaleTimeString().slice(0, -3);
 
     //каждый элемент обьекта запихиваем в массив
     let fields = [
@@ -12,8 +14,8 @@ export const sendMsg = async (req, res, next) => {
       "<b>Ім'я клієнта</b>: " + reqBody.clientName,
       "📞<b>Телефон</b>: " + reqBody.clientPhone,
       "📆<b>Дата</b>: " + reqBody.startDate,
-      "⏱️<b>Початок</b>: " + reqBody.startTime.split("T")[1].slice(0, -8),
-      "<b>Завершення</b>: " + reqBody.endTime.split("T")[1].slice(0, -8),
+      "⏱️<b>Початок</b>: " + begin,
+      "<b>Завершення</b>: " + end,
       "🙋🏼‍♀️<b>Комментар</b>: " + reqBody.comment,
     ];
     let msg = "";
