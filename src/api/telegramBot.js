@@ -82,10 +82,7 @@ export const telegramBot = bot.on("message", async (msg) => {
             end +
             "\n Телефон майстра: "
         );
-
-        setTimeout(async () => {
-          await bot.sendMessage(chatId, "0634748925");
-        }, 1000);
+        await bot.sendMessage(chatId, "0634748925");
       } catch (err) {
         console.error(err);
       }
