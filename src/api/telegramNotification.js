@@ -5,8 +5,8 @@ export const sendMsg = async (req, res, next) => {
   //токен и id чата берутся из telegramConfig.js
   try {
     let reqBody = req.body;
-    const begin = new Date(reqBody.startTime).toLocaleTimeString().slice(0, -6);
-    const end = new Date(reqBody.endTime).toLocaleTimeString().slice(0, -6);
+    const begin = data.startTime.getHours() + ":" + data.startTime.getMinutes();
+    const end = data.endTime.getHours() + ":" + data.endTime.getMinutes();
 
     //каждый элемент обьекта запихиваем в массив
     let fields = [
