@@ -67,7 +67,7 @@ export const telegramBot = bot.on("message", async (msg) => {
         const begin = new Date(data.startTime)
           .toLocaleTimeString()
           .slice(0, -3);
-        const end = new Date(reqBody.endTime).toLocaleTimeString().slice(0, -3);
+        const end = new Date(data.endTime).toLocaleTimeString().slice(0, -3);
 
         await bot.sendMessage(
           chatId,
