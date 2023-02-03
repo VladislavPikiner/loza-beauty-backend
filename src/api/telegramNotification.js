@@ -9,6 +9,7 @@ export const sendMsg = async (req, res, next) => {
     //каждый элемент обьекта запихиваем в массив
     let fields = [
       "📨<b>Новий онлайн-запис!</b>",
+      "✨<b>Процедура</b>: " + reqBody.name,
       "🙋🏼‍♀️<b>Ім'я клієнта</b>: " + reqBody.clientName,
       "📞<b>Телефон</b>: " + reqBody.clientPhone,
       "📆<b>Дата</b>: " + reqBody.startDate,

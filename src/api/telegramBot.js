@@ -69,12 +69,14 @@ export const telegramBot = bot.on("message", async (msg) => {
           "Дякуємо, запис прийнято!" +
             "\n Процедура: " +
             data.name +
-            "\n Дата запису: " +
+            "\n 📆 Дата запису: " +
             data.startDate +
-            "\n Початок: " +
+            "\n ⏱️ Початок: " +
             data.startTime +
             "\n Завершення: " +
             data.endTime +
+            "\n Ціна: " +
+            data.price +
             "\n Телефон майстра: "
         );
         await bot.sendMessage(chatId, "0634748925");
