@@ -64,9 +64,6 @@ export const telegramBot = bot.on("message", async (msg) => {
       try {
         const data = JSON.parse(msg?.web_app_data?.data);
         console.log(data.startDate);
-        const begin =
-          data.startTime.getHours() + ":" + data.startTime.getMinutes();
-        const end = data.endTime.getHours() + ":" + data.endTime.getMinutes();
 
         await bot.sendMessage(
           chatId,
@@ -76,9 +73,9 @@ export const telegramBot = bot.on("message", async (msg) => {
             "\n Дата запису: " +
             data.startDate +
             "\n Початок: " +
-            begin +
+            data.startTime +
             "\n Завершення: " +
-            end +
+            data.endTime +
             "\n Телефон майстра: "
         );
         await bot.sendMessage(chatId, "0634748925");
