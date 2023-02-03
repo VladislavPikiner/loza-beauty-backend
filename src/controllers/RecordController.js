@@ -13,18 +13,14 @@ export const create = async (req, res) => {
       endTime,
       comment,
     } = req.body;
-    const start = new Date(Date.parse(startTime) + 7200000);
-    const end = new Date(Date.parse(endTime) + 7200000);
-    console.log(start);
-    console.log(end);
 
     const doc = new RecordSchema({
       service: mongoose.Types.ObjectId(service),
       clientName,
       clientPhone,
       startDate,
-      startTime: start,
-      endTime: end,
+      startTime,
+      endTime,
       comment,
     });
 
@@ -142,22 +138,29 @@ export const unavailableTime = async (req, res) => {
     const availabilityTo = new Date(
       availabilityFrom.setDate(availabilityFrom.getDate() + 33)
     );
-    const availabilityFromFormatted = new Date().toISOString();
-    const availabilityToFormatted = availabilityTo.toISOString();
+    const availabilityFromFormatted = new Date().toLocaleDateString();
+    const availabilityToFormatted = availabilityTo.toLocaleDateString();
 
-    console.log(availabilityFromFormatted < availabilityToFormatted);
     console.log(availabilityFromFormatted);
     console.log(availabilityToFormatted);
+    console.log(availabilityFromFormatted < availabilityToFormatted);
     const records = await RecordSchema.find()
-      .where("startTime")
+      .where("startDate")
       .gt(availabilityFromFormatted)
       .lt(availabilityToFormatted)
       .populate({ path: "service", model: "Service" });
 
     const unavailableSlots = records.map((record) => {
-      let duration = record.service.duration / 1000 / 60;
-      const start = new Date(Date.parse(record.startTime) - 3600000);
-      let startTimes = start.toISOString().split(".")[0].slice(0, -3);
+      const duration = record.service.duration / 1000 / 60;
+      const start = new Date();
+      start.setDate(+record.startDate.split(".")[0]);
+      start.setMonth(+record.startDate.split(".")[1] - 1);
+      start.setFullYear(+record.startDate.split(".")[2]);
+      start.setHours(+record.startTime.split(":")[0] + 2);
+      start.setMinutes(+record.startTime.split(":")[1]);
+      const startTimes = start.toISOString().slice(0, -8);
+      console.log(startTimes);
+      console.log(+record.startDate.split(".")[1]);
 
       return {
         from: startTimes,

@@ -1,6 +1,6 @@
 import ServiceSchema from "../models/Service.js";
 import { getAvailabilities } from "@tspvivek/sscheduler";
-import mongoose from "mongoose";
+
 export const create = async (req, res) => {
   try {
     const {
@@ -63,7 +63,7 @@ export const deleteService = async (req, res) => {
 export const getAvailableTime = async (req, res) => {
   try {
     const { duration, unavailable, date, vacations } = req.body;
-
+    console.log(unavailable);
     const availabilityFrom = new Date();
     const availabilityTo = new Date(
       availabilityFrom.setDate(availabilityFrom.getDate() + 30)
@@ -74,28 +74,34 @@ export const getAvailableTime = async (req, res) => {
       to: availabilityTo.toISOString().split("T")[0],
       timezone: "EET",
       duration: duration,
-      interval: duration,
-
+      interval: 30,
+      normalize: true,
       schedule: {
         weekdays: {
           from: "08:00",
           to: "20:30",
-          // unavailability: [{ from: "12:00", to: "13:00" }], if need rest between records
+          // unavailability: [
+          //   { from: "00:00", to: "08:00" },
+          // ],
         },
         Saturday: { from: "08:00", to: "20:30" },
         Sunday: { from: "08:00", to: "20:30" },
-        unavailability: vacations, // second syntax for unavailable
+        unavailability: vacations,
         allocated: unavailable,
       },
-    }).filter((record) => {
-      // return record.from.includes(recordDate.toISOString().split("T")[0]);
-      return record.from.includes(date);
     });
 
-    const availableSlots = availableTime.map((time) => {
-      return time.from.split("T")[1].slice(0, 5);
-    });
+    const findAvailableSlots = Object.entries(availableTime).filter(
+      ([key, value]) => {
+        if (key === date) {
+          return value;
+        }
+      }
+    );
+    const availableSlots = findAvailableSlots[0][1];
 
-    res.status(200).json({ availableSlots });
-  } catch (error) {}
+    res.status(200).json(availableSlots);
+  } catch (error) {
+    res.status(500).json({ message: "Не удалось getAvailability" });
+  }
 };
