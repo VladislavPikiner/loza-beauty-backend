@@ -71,9 +71,9 @@ export const telegramBot = bot.on("message", async (msg) => {
             data.name +
             "\n 📆 Дата запису: " +
             data.startDate +
-            "\n ⏱️ Початок: " +
+            "\n ⏱️ Час: " +
             data.startTime +
-            "\n Завершення: " +
+            " - " +
             data.endTime +
             "\n Ціна: " +
             data.price +
