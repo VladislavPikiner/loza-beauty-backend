@@ -143,9 +143,8 @@ export const unavailableTime = async (req, res) => {
 
     const records = await RecordSchema.find()
       .where("startDate")
-      .gt(availabilityFromFormatted)
-      .lt(availabilityToFormatted)
-      .populate({ path: "service", model: "Service" });
+      .populate({ path: "service", model: "Service" })
+      .exec();
 
     const unavailableSlots = records.map((record) => {
       const duration = record.service.duration / 1000 / 60;
