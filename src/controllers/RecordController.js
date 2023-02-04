@@ -168,7 +168,7 @@ export const unavailableTime = async (req, res) => {
       };
     });
 
-    res.json({ unavailableSlots });
+    res.status(200).json(unavailableSlots);
   } catch (error) {
     console.error(error);
     res
