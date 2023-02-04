@@ -134,14 +134,7 @@ export const updateRecord = async (req, res) => {
 
 export const unavailableTime = async (req, res) => {
   try {
-    const availabilityFrom = new Date();
-    const availabilityTo = new Date(
-      availabilityFrom.setDate(availabilityFrom.getDate() + 33)
-    );
-    const availabilityFromFormatted = new Date().toLocaleDateString();
-    const availabilityToFormatted = availabilityTo.toLocaleDateString();
-
-    const records = await RecordSchema.find()
+    const records = await RecordSchema.find({ complete: false })
       .populate({ path: "service", model: "Service" })
       .exec();
 
