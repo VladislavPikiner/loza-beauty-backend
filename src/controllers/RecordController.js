@@ -142,9 +142,6 @@ export const unavailableTime = async (req, res) => {
     const availabilityToFormatted = availabilityTo.toLocaleDateString();
 
     const records = await RecordSchema.find()
-      .where("startDate")
-      .gt(availabilityFromFormatted)
-      .lt(availabilityToFormatted)
       .populate({ path: "service", model: "Service" })
       .exec();
 
