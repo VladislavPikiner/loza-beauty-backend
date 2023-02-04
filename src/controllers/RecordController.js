@@ -141,9 +141,6 @@ export const unavailableTime = async (req, res) => {
     const availabilityFromFormatted = new Date().toLocaleDateString();
     const availabilityToFormatted = availabilityTo.toLocaleDateString();
 
-    console.log(availabilityFromFormatted);
-    console.log(availabilityToFormatted);
-    console.log(availabilityFromFormatted < availabilityToFormatted);
     const records = await RecordSchema.find()
       .where("startDate")
       .gt(availabilityFromFormatted)
@@ -159,8 +156,6 @@ export const unavailableTime = async (req, res) => {
       start.setHours(+record.startTime.split(":")[0] + 2);
       start.setMinutes(+record.startTime.split(":")[1]);
       const startTimes = start.toISOString().slice(0, -8);
-      console.log(startTimes);
-      console.log(+record.startDate.split(".")[1]);
 
       return {
         from: startTimes,
