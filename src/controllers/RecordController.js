@@ -143,6 +143,8 @@ export const unavailableTime = async (req, res) => {
 
     const records = await RecordSchema.find()
       .where("startDate")
+      .gt(availabilityFromFormatted)
+      .lt(availabilityToFormatted)
       .populate({ path: "service", model: "Service" })
       .exec();
 
@@ -152,7 +154,7 @@ export const unavailableTime = async (req, res) => {
       start.setDate(+record.startDate.split(".")[0]);
       start.setMonth(+record.startDate.split(".")[1] - 1);
       start.setFullYear(+record.startDate.split(".")[2]);
-      start.setHours(+record.startTime.split(":")[0] + 2);
+      start.setHours(+record.startTime.split(":")[0]);
       start.setMinutes(+record.startTime.split(":")[1]);
       const startTimes = start.toISOString().slice(0, -8);
 
